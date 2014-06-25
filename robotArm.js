@@ -1,12 +1,11 @@
 var five = require("johnny-five"),
-board, potentiometer, servo;
+board, potentiometer, servo, range;
 
 board = new five.Board();
 
 board.on("ready", function(){
 
-	//set range for servo
-	scalingRange = [0, 179];
+	range = [0, 179];
 
 	//create a new 'potentiometer' hardware instance.
 	potentiometer = new five.Sensor({
@@ -17,13 +16,11 @@ board.on("ready", function(){
 	//create 'servo' instance
 	servo = new five.Servo({
 		pin: 9,
-		range: scalingRange
+		range: range
 	});
 
-	//Scale potentiometer's value to match servo's movement range
-	potentiometer.scale(scalingRange).on("change", function(err, value){
-		servo.to(five.FN.map(this.value));
+	potentiometer.scale(range).on("change", function(){
+		servo.to(this.value);
 	});
-
 
 });
